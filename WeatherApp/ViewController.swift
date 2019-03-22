@@ -12,6 +12,7 @@ import RxCocoa
 import RxSwift
 import RxDataSources
 import RxCoreLocation
+import Kingfisher
 
 class ViewController: UIViewController  {
 
@@ -54,12 +55,17 @@ class ViewController: UIViewController  {
         
         weatherViewModel.list.bind(to: weatherTableView.rx.items){ tableView, indexpath, item in
             let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell") as! WeatherTableViewCell
-            //cell.hourLabel.text = String(format:"%.0f", item.main?.temp ?? "X")
             cell.hourLabel.text = item.dt_txt?.components(separatedBy: " ")[1]
             cell.timeLabel.text = item.weather?[0].main
+            print(item.weather?[0].icon)
+            cell.weatherImageView.kf.setImage(with: URL(string: "https://openweathermap.org/img/w/\(item.weather?[0].icon ?? "").png"))
             return cell
         }.disposed(by: bag)
         
-            }
+        weatherViewModel.icon.bind { icon in
+            self.iconUIImageView.kf.setImage(with: URL(string: "https://openweathermap.org/img/w/\(icon).png"))
+            }.disposed(by: bag)
+        
+    }
 }
 
